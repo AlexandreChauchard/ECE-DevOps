@@ -1,1 +1,3 @@
-Voici le Readme.
+Author : Alexandre Chauchard
+Group : SI 6 FR
+
