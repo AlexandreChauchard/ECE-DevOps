@@ -29,3 +29,11 @@ Installation de Express :
 npm install express
 ```
 
+#### Instruction d'usage
+
+Nous pouvez créer un application web grâce au package Express en utilisant la commande :
+
+```bash
+npm start
+```
+
