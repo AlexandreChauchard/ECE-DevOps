@@ -4,6 +4,13 @@
 
 ### 1.1 Installation et tests
 
+En premier lieu il faut avoir installer NodeJS ainsi que Redis databse. 
+
+Node : https://nodejs.org/en/download
+Redis : https://redis.io/download/
+
+Il faut ensuite installer l'application.
+
 Pour cette étape il faut d'abord se rendre dans le dossier du lab.
 
 Installer l'application :
