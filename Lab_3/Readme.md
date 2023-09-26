@@ -79,7 +79,7 @@ Le premier ajout est celui empêchant de créer un utilisateur s'il existe déj�
 
 Pour ce faire on modifie dans un premier lieu le fichier `src/user.js` en ajoutant le code suivant :
 
-```CLI
+```javascript
     db.exists(user.username, (err, exist) => {
       if (err) {
         return callback(err, null);
@@ -94,7 +94,7 @@ Ce code retourne une erreur si `username` existe déjà dans la DB. Sinon le cod
 
 Il faut ensuite ajouter le test dans le fichier `test/user.controller.js` grâce au code suivant :
 
-```CLI
+```javascript
     it("avoid creating an existing user", (done) => {
       const user = {
         username: "sergkudinov",
@@ -114,4 +114,4 @@ Si on test la requête grâce au code de la partie 1.2 avec un utilisateur exist
 {"status":"error","msg":"User already exist"}
 ```
 
-On voit le bon message d'erreur correspondant.
+On voit le bon message d'erreur correspondant. De plus, avec le script `test`, les 8 tests sont bien validés.
