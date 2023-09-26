@@ -77,7 +77,7 @@ Pour créer cette fonction il faut d'abord faire plusieurs ajouts.
 
 Le premier ajout est celui empêchant de créer un utilisateur s'il existe déjà.
 
-Pour ce faire on modifie dans un premier lieu le fichier `src/user.js` en ajoutant le code suivant :
+Pour ce faire on modifie dans un premier lieu le fichier `src/controllers/user.js` en ajoutant le code suivant :
 
 ```javascript
     db.exists(user.username, (err, exist) => {
@@ -115,3 +115,42 @@ Si on test la requête grâce au code de la partie 1.2 avec un utilisateur exist
 ```
 
 On voit le bon message d'erreur correspondant. De plus, avec le script `test`, les 8 tests sont bien validés.
+
+Le prochain ajout sera celui qui empêche la fonction `get` quand l'utilisateur n'existe pas.
+
+On ajoute d'abord dans `src/controllers/user.js` le code suivant permettant de vérifier qu'un utilisateurs n'existe pas.
+
+``` javascript
+ get: (username, callback) => {
+    db.exists(username, (err, exist) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      if (exist == false) {
+        return callback(new Error("User don't exist"), null);
+      }
+    });
+  },
+```
+
+Ce code retourne une erreur si l'utilisateur n'existe pas.
+
+On ajoute ensuite le test dans `test/user.controller.js` afin de vérifier que tout fonctionne.
+
+Voici le code :
+
+``` javascript
+it("cannot get a user when it does not exist", (done) => {
+      const user = {
+        username: "a",
+      };
+      userController.get(user.username, (err, result) => {
+        expect(err).to.not.be.equal(null);
+        expect(result).to.be.equal(null);
+        done();
+      });
+    });
+```
+
+Ici, l'username n'existe pas donc on reçoit une erreur et aucun résultat. Les conditions sont remplies.

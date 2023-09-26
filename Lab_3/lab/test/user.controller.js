@@ -45,22 +45,27 @@ describe("User", () => {
         expect(result).to.not.be.equal(null);
         done();
       });
-    }); 
+    });
   });
 
   // TODO Create test for the get method
-  // describe('Get', ()=> {
-  //
-  //   it('get a user by username', (done) => {
-  //     // 1. First, create a user to make this unit test independent from the others
-  //     // 2. Then, check if the result of the get method is correct
-  //     done()
-  //   })
-  //
-  //   it('cannot get a user when it does not exist', (done) => {
-  //     // Chech with any invalid user
-  //     done()
-  //   })
-  //
-  // })
+  describe("Get", () => {
+    //
+    //   it('get a user by username', (done) => {
+    //     // 1. First, create a user to make this unit test independent from the others
+    //     // 2. Then, check if the result of the get method is correct
+    //     done()
+    //   })
+    //
+    it("cannot get a user when it does not exist", (done) => {
+      const user = {
+        username: "a",
+      };
+      userController.get(user.username, (err, result) => {
+        expect(err).to.not.be.equal(null);
+        expect(result).to.be.equal(null);
+        done();
+      });
+    });
+  });
 });

@@ -11,8 +11,6 @@ module.exports = {
       lastname: user.lastname,
     };
     // Save to DB
-    // TODO check if user already exists
-    
     db.exists(user.username, (err, exist) => {
       if (err) {
         return callback(err, null);
@@ -27,7 +25,24 @@ module.exports = {
       callback(null, res); // Return callback
     });
   },
-  // get: (username, callback) => {
-  //   // TODO create this method
-  // }
+
+  get: (username, callback) => {
+    db.exists(username, (err, exist) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      if (exist == false) {
+        return callback(new Error("User don't exist"), null);
+      }
+
+      if (exist) {
+        const userObj = {
+          firstname: "a",
+          lastname: "b",
+        };
+        return callback(null, userObj);
+      }
+    });
+  },
 };
