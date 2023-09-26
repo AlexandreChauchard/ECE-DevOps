@@ -75,7 +75,7 @@ Il suffit de remplacer les champs `username`, `firstname` et `lastname`.
 
 Pour créer cette fonction il faut d'abord faire plusieurs ajouts.
 
-Le premier ajout est celui empêchant de créer un utilisateur s'il existe déjà.
+#### Le premier ajout est celui empêchant de créer un utilisateur s'il existe déjà.
 
 Pour ce faire on modifie dans un premier lieu le fichier `src/controllers/user.js` en ajoutant le code suivant :
 
@@ -116,7 +116,7 @@ Si on test la requête grâce au code de la partie 1.2 avec un utilisateur exist
 
 On voit le bon message d'erreur correspondant. De plus, avec le script `test`, les 8 tests sont bien validés.
 
-Le prochain ajout sera celui qui empêche la fonction `get` quand l'utilisateur n'existe pas.
+#### Le prochain ajout sera celui qui empêche la fonction `get` quand l'utilisateur n'existe pas.
 
 On ajoute d'abord dans `src/controllers/user.js` le code suivant permettant de vérifier qu'un utilisateurs n'existe pas.
 
