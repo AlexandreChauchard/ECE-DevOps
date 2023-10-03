@@ -20,29 +20,29 @@ module.exports = {
       }
     });
 
-    db.hmset(user.username, userObj, (err, res) => {
-      if (err) return callback(err, null);
-      callback(null, res); // Return callback
-    });
+    db.hgetall(user.username, function(err, res) {
+      if (err) return callback(err, null)
+      if (!res) {
+        // Save to DB
+        db.hmset(user.username, userObj, (err, res) => {
+          if (err) return callback(err, null)
+          callback(null, res) // Return callback
+        })
+      } else {
+        callback(new Error("User already exists"), null)
+      }
+    })
   },
 
-  get: (username, callback) => {
-    db.exists(username, (err, exist) => {
-      if (err) {
-        return callback(err, null);
-      }
-
-      if (exist == false) {
-        return callback(new Error("User don't exist"), null);
-      }
-
-      if (exist) {
-        const userObj = {
-          firstname: "a",
-          lastname: "b",
-        };
-        return callback(null, userObj);
-      }
-    });
-  },
+    get: (username, callback) => {
+      if(!username)
+        return callback(new Error("Username must be provided"), null)
+      db.hgetall(username, function(err, res) {
+        if (err) return callback(err, null)
+        if (res)
+          callback(null, res)
+        else
+          callback(new Error("User doesn't exists"), null)
+      })
+    }
 };
