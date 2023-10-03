@@ -4,7 +4,7 @@
 
 ### 1.1 Installation et tests
 
-En premier lieu il faut avoir installer NodeJS ainsi que Redis databse.
+En premier lieu il faut avoir installer NodeJS ainsi que Redis database.
 
 Node : https://nodejs.org/en/download
 Redis : https://redis.io/download/
@@ -23,6 +23,24 @@ Faire les tests grâce au script `test` :
 
 ```CLI
 npm test
+```
+
+Activer la database Redis :
+
+``` CLI
+redis-server
+```
+
+Puis 
+
+``` CLI
+redis-cli ping
+```
+
+Qui doit générer le message suivant :
+
+``` CLI
+pong
 ```
 
 le résultat sera le suivant :
@@ -80,14 +98,18 @@ Pour créer cette fonction il faut d'abord faire plusieurs ajouts.
 Pour ce faire on modifie dans un premier lieu le fichier `src/controllers/user.js` en ajoutant le code suivant :
 
 ```javascript
-    db.exists(user.username, (err, exist) => {
-      if (err) {
-        return callback(err, null);
+   db.hgetall(user.username, function(err, res) {
+      if (err) return callback(err, null)
+      if (!res) {
+        // Save to DB
+        db.hmset(user.username, userObj, (err, res) => {
+          if (err) return callback(err, null)
+          callback(null, res) // Return callback
+        })
+      } else {
+        callback(new Error("User already exists"), null)
       }
-      if (exist) {
-        return callback(new Error("User already exist"), null);
-      }
-    });
+    })
 ```
 
 Ce code retourne une erreur si `username` existe déjà dans la DB. Sinon le code continue normalement et créer le nouvel utilisateur.
@@ -121,17 +143,17 @@ On voit le bon message d'erreur correspondant. De plus, avec le script `test`, l
 On ajoute d'abord dans `src/controllers/user.js` le code suivant permettant de vérifier qu'un utilisateurs n'existe pas.
 
 ``` javascript
- get: (username, callback) => {
-    db.exists(username, (err, exist) => {
-      if (err) {
-        return callback(err, null);
-      }
-
-      if (exist == false) {
-        return callback(new Error("User don't exist"), null);
-      }
-    });
-  },
+  get: (username, callback) => {
+    if(!username)
+      return callback(new Error("Username must be provided"), null)
+    db.hgetall(username, function(err, res) {
+      if (err) return callback(err, null)
+      if (res)
+        callback(null, res)
+      else
+        callback(new Error("User doesn't exists"), null)
+    })
+  }
 ```
 
 Ce code retourne une erreur si l'utilisateur n'existe pas.
@@ -141,16 +163,41 @@ On ajoute ensuite le test dans `test/user.controller.js` afin de vérifier que t
 Voici le code :
 
 ``` javascript
-it("cannot get a user when it does not exist", (done) => {
-      const user = {
-        username: "a",
-      };
-      userController.get(user.username, (err, result) => {
-        expect(err).to.not.be.equal(null);
-        expect(result).to.be.equal(null);
-        done();
-      });
-    });
+it('can not get a user when it does not exist', (done) => {
+      userController.get('invalid', (err, result) => {
+        expect(err).to.not.be.equal(null)
+        expect(result).to.be.equal(null)
+        done()
+      })
+    })
 ```
 
 Ici, l'username n'existe pas donc on reçoit une erreur et aucun résultat. Les conditions sont remplies.
+
+#### Fonction `get` d'un utilisateur par son `username`.
+
+Ici on veut obtenir un utilisateur grâce à son `username`. On utilise la même fonction `get` dans `src/controllers/user.js`.
+
+Pour le test voici le code : 
+
+``` javascript
+it('get a user by username', (done) => {
+      const user = {
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+      // Create a user
+      userController.create(user, () => {
+        // Get an existing user
+        userController.get(user.username, (err, result) => {
+          expect(err).to.be.equal(null)
+          expect(result).to.be.deep.equal({
+            firstname: 'Sergei',
+            lastname: 'Kudinov'
+          })
+          done()
+        })
+      })
+    })
+```
