@@ -6,13 +6,25 @@ Par Raphaël HILT
 Il faut au préalable crer un fichier package notamment à l'aide de la fonction
 
 ``` CLI
-npm init -y ```
+npm init -y 
+```
 
 Puis
 
 ```CLI
-npm install ```
+npm install 
+```
 
+Puis
 
+```
+npm test
+```
+
+et enfin
+
+```
+npm start
+```
 
 
