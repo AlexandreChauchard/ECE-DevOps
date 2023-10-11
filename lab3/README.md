@@ -5,12 +5,14 @@ Par Raphaël HILT
 
 Il faut au préalable crer un fichier package notamment à l'aide de la fonction
 
-``` bash
+``` CLI
 npm init -y ```
 
 Puis
 
 ```CLI
 npm install ```
+
+
 
 
