@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: userapi # This is lab3 on root of the repository. 
+        working-directory: lab3/lab # This is lab3 on root of the repository. 
 
     strategy:
       matrix:
@@ -36,7 +36,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: 'userapi/package-lock.json'
+        cache-dependency-path: 'lab3/lab/package-lock.json'
     - run: npm ci # Similar to npm install but for CI. Doesn't rely on the package.json for dependency resolution; instead, it uses the package-lock.
     - run: npm run build --if-present
     - run: npm test
