@@ -1,0 +1,14 @@
+name: Mon Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Votre action
+      uses: actions/your-action@v1 # Remplacez 'your-action' par le nom de l'action que vous souhaitez utiliser
