@@ -1,4 +1,4 @@
-name: Mon Workflow
+name: Exécuter le lab3
 
 on:
   push:
@@ -6,9 +6,14 @@ on:
       - main
 
 jobs:
-  build:
+  run_lab3:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Votre action
-      uses: actions/your-action@v1 # Remplacez 'your-action' par le nom de l'action que vous souhaitez utiliser
+    - name: Vérification du dépôt
+      uses: actions/checkout@v2 # Cette action permet de récupérer le code du dépôt
+
+    - name: Exécuter le lab3
+      run: |
+        cd lab3
+        # Insérez ici les commandes que vous souhaitez exécuter dans le dossier "lab3"
