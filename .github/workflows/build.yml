@@ -3,4 +3,6 @@ jobs:
   first-job:
     runs-on: windows-latest
     steps :
+      - run: cd Lab_4
+      - run: cd userapi
       - run: npm test
