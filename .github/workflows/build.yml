@@ -16,6 +16,8 @@ jobs:
       
       - name: Install project dependencies
         run: npm install  # Install project dependencies
+        working-directory: Lab_4/userapi  # Répertoire de travail
       
       - name: Run tests
         run: npm test  # Run your tests #ajout
+        working-directory: Lab_4/userapi  # Répertoire de travail
