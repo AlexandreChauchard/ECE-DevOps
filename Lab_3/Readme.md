@@ -29,7 +29,7 @@ Activer la database Redis :
 
 ``` CLI
 redis-server
-```
+```     
 
 Puis 
 
@@ -117,18 +117,22 @@ Ce code retourne une erreur si `username` existe déjà dans la DB. Sinon le cod
 Il faut ensuite ajouter le test dans le fichier `test/user.controller.js` grâce au code suivant :
 
 ```javascript
-    it("avoid creating an existing user", (done) => {
+      it('avoid creating an existing user', (done)=> {
       const user = {
-        username: "sergkudinov",
-        firstname: "Sergei",
-        lastname: "Kudinov",
-      };
-      userController.create(user, (err, result) => {
-        expect(err).to.be.equal(null);
-        expect(result).to.not.be.equal(null);
-        done();
-      });
-    });
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+      // Create a user
+      userController.create(user, () => {
+        // Create the same user again
+        userController.create(user, (err, result) => {
+          expect(err).to.not.be.equal(null)
+          expect(result).to.be.equal(null)
+          done()
+        })
+      })
+    })
 ```
 Si on test la requête grâce au code de la partie 1.2 avec un utilisateur existant, on obtient alors : 
 
@@ -144,16 +148,14 @@ On ajoute d'abord dans `src/controllers/user.js` le code suivant permettant de v
 
 ``` javascript
   get: (username, callback) => {
-    if(!username)
-      return callback(new Error("Username must be provided"), null)
-    db.hgetall(username, function(err, res) {
-      if (err) return callback(err, null)
-      if (res)
-        callback(null, res)
-      else
-        callback(new Error("User doesn't exists"), null)
-    })
-  }
+    if (!username)
+      return callback(new Error("Username must be provided"), null);
+    db.hgetall(username, function (err, res) {
+      if (err) return callback(err, null);
+      if (res) callback(null, res);
+      else callback(new Error("User doesn't exists"), null);
+    });
+  },
 ```
 
 Ce code retourne une erreur si l'utilisateur n'existe pas.
@@ -163,13 +165,13 @@ On ajoute ensuite le test dans `test/user.controller.js` afin de vérifier que t
 Voici le code :
 
 ``` javascript
-it('can not get a user when it does not exist', (done) => {
-      userController.get('invalid', (err, result) => {
-        expect(err).to.not.be.equal(null)
-        expect(result).to.be.equal(null)
-        done()
-      })
-    })
+it("can not get a user when it does not exist", (done) => {
+      userController.get("invalid", (err, result) => {
+        expect(err).to.not.be.equal(null);
+        expect(result).to.be.equal(null);
+        done();
+      });
+    });
 ```
 
 Ici, l'username n'existe pas donc on reçoit une erreur et aucun résultat. Les conditions sont remplies.
@@ -181,7 +183,84 @@ Ici on veut obtenir un utilisateur grâce à son `username`. On utilise la même
 Pour le test voici le code : 
 
 ``` javascript
-it('get a user by username', (done) => {
+it("get a user by username", (done) => {
+      const user = {
+        username: "sergkudinov",
+        firstname: "Sergei",
+        lastname: "Kudinov",
+      };
+      // Create a user
+      userController.create(user, () => {
+        // Get an existing user
+        userController.get(user.username, (err, result) => {
+          expect(err).to.be.equal(null);
+          expect(result).to.be.deep.equal({
+            firstname: "Sergei",
+            lastname: "Kudinov",
+          });
+          done();
+        });
+      });
+    });
+```
+
+### 2.2 Créer la methode `GET` avec `REST API`
+
+En premier lieu on modifie le code du fichier `src/routes:user.js` avec le code suivant :
+
+``` javascript
+const express = require('express')
+const userController = require('../controllers/user')
+
+const userRouter = express.Router()
+
+userRouter
+  .post('/', (req, resp) => {
+    userController.create(req.body, (err, res) => {
+      let respObj
+      if(err) {
+        respObj = {
+          status: "error",
+          msg: err.message
+        }
+        return resp.status(400).json(respObj)
+      }
+      respObj = {
+        status: "success",
+        msg: res
+      }
+      resp.status(201).json(respObj)
+    })
+  })
+  .get('/:username', (req, resp, next) => { // Express URL params - https://expressjs.com/en/guide/routing.html
+    // TODO Create get method API
+    const username = req.params.username
+    userController.get(username, (err, res) => {
+      let respObj
+      if(err) {
+        respObj = {
+          status: "error",
+          msg: err.message
+        }
+        return resp.status(400).json(respObj)
+      }
+      respObj = {
+        status: "success",
+        msg: res
+      }
+      resp.status(200).json(respObj)
+    })
+  })
+  
+module.exports = userRouter
+```
+
+Et on modifie le code du fichier `test/user.router.js` en ajoutant le code suivant :
+
+``` javascript
+describe('GET /user', () => {
+    
+    it('get an existing user', (done) => {
       const user = {
         username: 'sergkudinov',
         firstname: 'Sergei',
@@ -189,15 +268,35 @@ it('get a user by username', (done) => {
       }
       // Create a user
       userController.create(user, () => {
-        // Get an existing user
-        userController.get(user.username, (err, result) => {
-          expect(err).to.be.equal(null)
-          expect(result).to.be.deep.equal({
-            firstname: 'Sergei',
-            lastname: 'Kudinov'
+        // Get the user
+        chai.request(app)
+          .get('/user/' + user.username)
+          .then((res) => {
+            chai.expect(res).to.have.status(200)
+            chai.expect(res.body.status).to.equal('success')
+            chai.expect(res).to.be.json
+            done()
           })
-          done()
-        })
+          .catch((err) => {
+             throw err
+          })
       })
     })
+    
+    it('can not get a user when it does not exis', (done) => {
+      chai.request(app)
+        .get('/user/invalid')
+        .then((res) => {
+          chai.expect(res).to.have.status(400)
+          chai.expect(res.body.status).to.equal('error')
+          chai.expect(res).to.be.json
+          done()
+        })
+        .catch((err) => {
+           throw err
+        })
+    })
+  })
 ```
+
+Ceci correspond aux test API. 

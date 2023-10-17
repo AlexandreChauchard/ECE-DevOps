@@ -10,39 +10,27 @@ module.exports = {
       firstname: user.firstname,
       lastname: user.lastname,
     };
-    // Save to DB
-    db.exists(user.username, (err, exist) => {
-      if (err) {
-        return callback(err, null);
-      }
-      if (exist) {
-        return callback(new Error("User already exist"), null);
-      }
-    });
-
-    db.hgetall(user.username, function(err, res) {
-      if (err) return callback(err, null)
+    // Check if user already exists
+    db.hgetall(user.username, function (err, res) {
+      if (err) return callback(err, null);
       if (!res) {
         // Save to DB
         db.hmset(user.username, userObj, (err, res) => {
-          if (err) return callback(err, null)
-          callback(null, res) // Return callback
-        })
+          if (err) return callback(err, null);
+          callback(null, res); // Return callback
+        });
       } else {
-        callback(new Error("User already exists"), null)
+        callback(new Error("User already exists"), null);
       }
-    })
+    });
   },
-
-    get: (username, callback) => {
-      if(!username)
-        return callback(new Error("Username must be provided"), null)
-      db.hgetall(username, function(err, res) {
-        if (err) return callback(err, null)
-        if (res)
-          callback(null, res)
-        else
-          callback(new Error("User doesn't exists"), null)
-      })
-    }
+  get: (username, callback) => {
+    if (!username)
+      return callback(new Error("Username must be provided"), null);
+    db.hgetall(username, function (err, res) {
+      if (err) return callback(err, null);
+      if (res) callback(null, res);
+      else callback(new Error("User doesn't exists"), null);
+    });
+  },
 };
