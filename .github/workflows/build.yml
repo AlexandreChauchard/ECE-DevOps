@@ -2,6 +2,20 @@ on: push
 jobs:
   first-job:
     runs-on: windows-latest
-    steps :
-      - run: cd lab_4
-      - run: npm test
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2  # Check out your code repository
+      
+      - name: Change directory to Lab_4/userapi
+        run: cd Lab_4/userapi
+        
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18  # You can specify the version you need here, e.g., 14, 16, etc.
+      
+      - name: Install project dependencies
+        run: npm install express  # Install project dependencies
+      
+      - name: Run tests
+        run: npm test  # Run your tests
