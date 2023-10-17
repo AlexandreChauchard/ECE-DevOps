@@ -59,3 +59,4 @@ Au premier abord `redis` ne fonctionne pas c'est pour cela qu'on utilise du code
 
 ## Partie 2 - Livraison continue avec Azure
 
+Nous suivons le tutoriel et déployons notre application sans problème. Rien à rajouter ici.
