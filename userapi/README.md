@@ -20,16 +20,17 @@ This application is written on NodeJS and it uses Redis database.
 
 Go to the root directory of the application (where `package.json` file located) and run:
 
-```
+```CLI
 npm install 
 ```
+
 ## Usage
 
 1. Start a web server
 
 From the root directory of the project run:
 
-```
+```CLI
 npm start
 ```
 
@@ -48,7 +49,7 @@ curl --header "Content-Type: application/json" \
 
 It will output:
 
-```
+```CLI
 {"status":"success","msg":"OK"}
 ```
 
@@ -58,6 +59,6 @@ Another way to test your REST API is to use [Postman](https://www.postman.com/).
 
 From the root directory of the project, run:
 
-```
+```CLI
 npm test
 ```
