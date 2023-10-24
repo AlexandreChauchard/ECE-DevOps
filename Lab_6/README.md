@@ -24,7 +24,7 @@ Puis :
 docker image
 ```
 
-On voit que notre conteneur apparît bien.
+On voit que notre conteneur apparaît bien.
 
 ## Partie 3 - Créer un conteneur docker avec plusieurs options
 
