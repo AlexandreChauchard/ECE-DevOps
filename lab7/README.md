@@ -80,3 +80,56 @@ Et on obtient cette fois une erreur :
 ```
 curl: (7) Failed to connect to localhost port 8080 after 6 ms: Couldn't connect to server
 ```
+
+## 3. Learn to expose a Kubernetes service to the outside
+
+1. Expose the deployment you created in the first part of the lab with:
+
+   Afi de trouver le Deployment name et le port number on effectuer au prélable les comandes suivantes:
+
+   ```
+   kubectl get deployments 
+   ```
+   et on utilise le port souhaité ```8080```
+
+   pour enfin avoir les infomations pour faire la commande suivante 
+
+   ```
+   kubectl expose deployments/kubernetes-bootcamp --type="NodePort" --port 8080
+   ```
+   
+2. Find out on which port the service has been attached with:
+   ```
+   kubectl get services
+   ```
+
+   et on obtient: 
+   ```kubernetes-bootcamp   NodePort    10.103.178.0   <none>        8080:30641/TCP   2m41s``````
+
+3. Get the IP of your Minikube VM with:
+
+   ```
+   minikube ip
+   ```
+
+   result: 192.168.49.2
+
+
+4. Using the answers of questions 2 and 3, open your web browser and try to reach the web app.
+
+on réutilise les infomration récolter par les question 2 et 3:
+
+ IP: 192.168.49.2
+
+ et 
+
+ PORT: 30641
+
+ ensuite on effectue la commande suivante
+
+```
+minikube service $SERVICE_NAME
+```
+
+et automatiquement cela ouvre une page web avec pour url:
+```http://127.0.0.1:52628```
