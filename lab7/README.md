@@ -133,3 +133,26 @@ minikube service $SERVICE_NAME
 
 et automatiquement cela ouvre une page web avec pour url:
 ```http://127.0.0.1:52628```
+
+
+## 4. Learn to scale up and down a Kubernetes deployment
+
+1. Scale up your deployment to a total number of 5 pods with:
+  ```
+  kubectl scale deployments/kubernetes-bootcamp --replicas=5
+  ```
+
+  Ensuite on utilise la commande ```kubectl get pods``` pour afficher les 5 pods sous le status 'running'
+
+3. Open the exposed service through your web browser again.
+   Force refresh a couple of times using `CTRL+F5`
+   What is happening? Why?
+
+   on utilise donc la commande ```minikube service kubernetes-bootcamp``` et on remarque que lorsque l'on réfraichie la page, on change de pods par moment.
+   
+4. Scale down again your deployment to 2 pods and confirm the other 3 are not running anymore.
+
+On utilise donc la commande :
+```
+kubectl scale deployments/kubernetes-bootcamp --replicas=2
+```
