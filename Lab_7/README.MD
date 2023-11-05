@@ -23,8 +23,9 @@ minikube start --driver=docker
 Et finalement : 
 
 ``` bash
-minikube status pour vérifier que tout est ok
+minikube status 
 ```
+Pour vérifier que tout est ok
 
 Dans notre cas c'est bon.
 
@@ -221,3 +222,60 @@ kubernetes-bootcamp-855d5cc575-l4sds   1/1     Terminating   0          3m7s
 kubernetes-bootcamp-855d5cc575-rw9wk   1/1     Terminating   0          3m7s
 kubernetes-bootcamp-855d5cc575-v2bqs   1/1     Terminating   0          3m7s
 ```
+
+## Partie 5 - Lancer une application à plusieurs Pods
+
+### 5.1 Mettre à jour l'image docker
+
+Avec la commande suivante :
+
+``` bash
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+```
+
+Il faut actualiser la page plusieurs fois pour voir.
+
+### 5.2 Résultats 
+
+?
+
+### 5.3 Modifier à nouveau
+
+Avec cette commande :
+
+```bash
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v3
+```
+
+### 5.4 Lister les pods
+
+Avec cette commande :
+
+``` bash
+kubectl get pods
+```
+
+On obtient :
+
+``` bash 
+NAME                                   READY   STATUS         RESTARTS   AGE
+kubernetes-bootcamp-66b8fc57cb-2l8wm   0/1     ErrImagePull   0          33s
+kubernetes-bootcamp-69b6f9fbb9-djftd   1/1     Running        0          107s
+kubernetes-bootcamp-69b6f9fbb9-nkbr4   1/1     Running        0          111s
+```
+
+### 5.5 Annuler l'opération précédente
+
+Voici le code :
+
+``` bash
+kubectl rollout undo deployments/kubernetes-bootcamp
+```
+
+On voit que le pods présentant une erreur a disparu.
+
+### 5.6 Roll bacj jusqu'à la partie 2
+
+?
+
+## Partie 6 - Déployer une app en utilisant YAML
