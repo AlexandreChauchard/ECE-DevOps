@@ -14,7 +14,7 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin
 sudo install minikube-darwin-amd64 /usr/local/bin/minikube
 ```
 
-Puis :
+Puis après avoir ouvert l'application Docker :
 
 ``` bash
 minikube start --driver=docker
@@ -279,3 +279,89 @@ On voit que le pods présentant une erreur a disparu.
 ?
 
 ## Partie 6 - Déployer une app en utilisant YAML
+
+### 6.1 Nettoyer ce que l'on a fait
+
+Avec les commandes suivantes :
+
+``` bash
+kubectl delete service kubernetes-bootcamp
+kubectl delete deployment kubernetes-bootcamp
+```
+
+### 6.2 Modifier `To complete #1`
+
+Voici ce que l'on ajoute :
+
+``` bash
+image: gcr.io/google-samples/kubernetes-bootcamp:v1
+```
+
+### 6.3 Appliquer `deployment.yaml`
+
+En utilisant la commande suivant :
+
+``` bash
+kubectl apply -f deployment.yaml
+```
+
+On voit alors l'état des pods :
+
+``` bash
+NAME                                   READY   STATUS    RESTARTS   AGE
+kubernetes-bootcamp-855d5cc575-bm5c4   1/1     Running   0          5s      
+```
+
+### 6.4 Modifier `service.yaml`
+
+Voici le nouveau code :
+
+``` yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-bootcamp-service
+spec:
+  type: NodePort
+  selector:
+    app: kubernetes-bootcamp
+  ports:
+    - port: 8080
+```
+
+### 6.5 Appliquer `service.yaml`
+
+On utilise ceci :
+
+``` bash
+kubectl apply -f service.yaml
+```
+
+On peut maintenant accéder sur le web.
+
+### 6.6 Modifier `To complete #2`
+
+Voici le nouveau code 
+
+``` yaml
+replicas: 3
+```
+
+### 6.7 Lancer le code
+
+Avec cette commande : 
+
+``` bash
+kubectl apply -f deployment.yaml
+```
+
+On voit que :
+
+``` bash
+NAME                                   READY   STATUS    RESTARTS   AGE
+kubernetes-bootcamp-855d5cc575-bm5c4   1/1     Running   0          5s
+kubernetes-bootcamp-855d5cc575-m49cn   1/1     Running   0          6s
+kubernetes-bootcamp-855d5cc575-n8vpw   1/1     Running   0          5s
+```
+
+Si on rafraichi la page on tombe sur plusieurs répliques.
