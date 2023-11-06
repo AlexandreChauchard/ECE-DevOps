@@ -156,3 +156,33 @@ On utilise donc la commande :
 ```
 kubectl scale deployments/kubernetes-bootcamp --replicas=2
 ```
+
+
+## 5. Run a multiple pod application in Kubernetes
+
+1. Prepare to hit `CTRL+F5` on your browser multiple times right after launching the following command:
+2. on met à jour l'image du docker
+   ```
+   kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+   ```
+3. What happened to the web page?
+
+   v de vient v=2
+
+4. Update the Docker image used by the `deployment` again by setting the image to `jocatalin/kubernetes-bootcamp:v3`
+5. List all of the running pods, what is happening here?
+
+```
+raphael@MacBook-Air-de-Raphael ECE_DevOps_CHAUCHARD_HILT_GR6 % kubectl get pods 
+
+NAME                                   READY   STATUS             RESTARTS   AGE
+kubernetes-bootcamp-66b8fc57cb-p82tb   0/1     ImagePullBackOff   0          4h56m
+kubernetes-bootcamp-69b6f9fbb9-842rh   1/1     Running            0          5h21m
+kubernetes-bootcamp-69b6f9fbb9-z7cwc   1/1     Running            0          5h22m
+``````
+
+6. Cancel the previous operation by running:
+   ```
+   kubectl rollout undo deployments/kubernetes-bootcamp
+   ```
+7. Roll back the service to the image we first chose in part 2 of the lab.
