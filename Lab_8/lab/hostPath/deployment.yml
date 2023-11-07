@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-host-path
+  labels:
+    app: nginx-host-path
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-host-path
+  template:
+    metadata:
+      labels:
+        app: nginx-host-path
+    spec:
+      volumes:
+      - name: hostpath-volume
+        hostPath:
+          path: /mnt/hostPath  # Path on the virtual node file system
+      containers:
+      - name: nginx-container
+        image: nginx
+        ports:
+          - containerPort: 80
+            name: "http-server"
+        volumeMounts:
+        - name: hostpath-volume
+          mountPath: /var/www/html  # Mount the volume to this path in the container
