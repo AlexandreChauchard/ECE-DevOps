@@ -17,4 +17,63 @@ Pour installer Docker on doit utiliser la commande:
 ```
 docker run hello-world
 ```
-et on recoit en retour ce message: 'Hello from Docker!'
+et on recoit en retour ce message: 
+```Hello from Docker!```
+
+## 2. Écrire un fichier Docker et construire une image Docker
+
+Afin de construire une image docker on creer un fichier nommé hello-world-docker dans lequel on met ces fichier:
+
+server.js: 
+```
+'use strict';
+
+const express = require('express');
+
+const PORT = 8080;
+
+const app = express();
+app.get('/', (req, res) => {
+  res.send('Hello World from Docker!');
+});
+
+app.listen(PORT);
+console.log(`Running on http://localhost:${PORT}`);
+```
+package.json:
+
+```{
+    "name": "hello_world_docker",
+    "version": "1.0.0",
+    "description": "Node.js on Docker",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.16.1"
+    }
+  }
+```
+
+et Dockerfile:
+
+```FROM node:12
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 8080
+
+CMD [ "npm", "start" ]
+```
+
+on rentre ensuite dans le terminale en se situant dans le dossier hello-worold-docker
+``` 
+    docker build -t hello-world-docker .
+```
