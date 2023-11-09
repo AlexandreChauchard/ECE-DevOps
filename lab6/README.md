@@ -41,8 +41,8 @@ app.listen(PORT);
 console.log(`Running on http://localhost:${PORT}`);
 ```
 package.json:
-
-```{
+```
+{
     "name": "hello_world_docker",
     "version": "1.0.0",
     "description": "Node.js on Docker",
@@ -57,8 +57,8 @@ package.json:
 ```
 
 et Dockerfile:
-
-```FROM node:12
+```
+FROM node:12
 
 WORKDIR /usr/src/app
 
@@ -75,5 +75,22 @@ CMD [ "npm", "start" ]
 
 on rentre ensuite dans le terminale en se situant dans le dossier hello-worold-docker
 ``` 
-    docker build -t hello-world-docker .
+docker build -t hello-world-docker .
 ```
+
+Afin de vérifier si notre docker apparait dans les image docker local on utilise la commande: 
+```
+docker images
+```
+
+qui nous sort:
+```
+hello-world-docker            latest    9b0515d0a34a   13 minutes ago   869MB
+```
+
+## 3. Executer un conteneur Docker avec plusieurs options
+
+la première commande est :
+```docker run -p 12345:8080 -d hello-world-docker```
+ce qui nous retourne :
+```abc1e6f88a0d40ccb7da7a86f60c055cf5bb1bf9a75553a7d898aab08a824f6b```
