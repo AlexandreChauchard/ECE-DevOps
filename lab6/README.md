@@ -91,6 +91,28 @@ hello-world-docker            latest    9b0515d0a34a   13 minutes ago   869MB
 ## 3. Executer un conteneur Docker avec plusieurs options
 
 la première commande est :
+
 ```docker run -p 12345:8080 -d hello-world-docker```
 ce qui nous retourne :
+
 ```abc1e6f88a0d40ccb7da7a86f60c055cf5bb1bf9a75553a7d898aab08a824f6b```
+
+et on verifie avec :
+
+```docker ps```
+
+et on garde de côté l'ID du conteneur : abc1e6f88a0d
+
+et aussi par internet avec :
+
+```http://localhost:12345```
+
+On peut ensuite imprimez les journaux du conteneur:
+```
+docker logs abc1e6f88a0d
+```
+
+On arrete le tout avec :
+```
+docker stop abc1e6f88a0d
+```
