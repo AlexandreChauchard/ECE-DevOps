@@ -145,3 +145,52 @@ docker push raphaelhilt/raphaimage
 
 on retouve bel et bien le docker sur mon profil DockerHub
 
+## 5. Creer et executer une application de conteneurs multiples avec Docker Compose
+
+```docker build -t raphadockercompose .```
+
+voici notr nouveau docker-compose.yaml:
+```
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - "8000:80"
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+       WORDPRESS_DB_NAME: wordpress
+volumes:
+    db_data: {}
+```
+on effetue :
+```
+docker-compose up
+```
+
+lorsque j'effectue cette commande voici le resultat: 
+
+```
+[+] Running 0/1
+ ⠦ db Pulling                                                                                                                                       1.5s 
+no matching manifest for linux/arm64/v8 in the manifest list entries
+```
+
+je ne comprend pas pourquoi. J'ai aussi esseyé ```raphadockercompose up``` car c'est comme ca que je l'ai appelé. 
