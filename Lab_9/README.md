@@ -273,4 +273,20 @@ kubectl get virtualservice reviews -o yaml
       weight: 50
 ```
 
-On voit bien 50/50s
+On voit bien 50/50s.
+
+Maintenant lorsque l'on rafraichit la page, on voit des étoiles 50% du temps.
+
+On met v3 à 100% :
+
+``` bash
+kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
+```
+
+Maintenant on voit toujours les étoiles.
+
+Cleanup :
+
+``` bash
+kubectl delete -f samples/bookinfo/networking/virtual-service-all-v1.yaml
+```
