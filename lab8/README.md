@@ -101,11 +101,103 @@ pour obtneir une reponse: ```Hello from Kubernetes storage!```
 
 5. Verify
 
-- When a **Pod is removed** from a node for any reason, the data in the `emptyDir` is deleted forever.   
-  You can remove a pod using Kubernetes Dashboard that is started with `minikube dashboard` command or `kubectl delete pod/<POD_NAME>`.
+Afin de verifier que lorsqu'un Pod est supprimé d'un nœud pour une raison quelconque, les données contenues dans le `emptyDir` sont supprimées à jamais.   
 
-- When a **container in a Pod is removed**, Kubernetes will create a new container and will mount the existing `emptyDir` volume to it.   
-  Learn the Container ID with the command `kubectl describe pod/<POD_NAME>`. Then you can enter to Minikube Node with `minikube ssh` and manually remove the container with `docker rm -f CONTAINER_ID`.
+Pou ce faire, nous commencons par supprimer un pod en utilisant 
+```
+kubectl delete pod/nginx-empty-dir-567784fd-8hc22
+```
+
+voici le nouveau pod crée: `nginx-empty-dir-567784fd-6p2zl`
+
+on effectue les même commandes précédente afin de voir si le fichier index.html a bien disparu:
+```
+kubectl exec -it nginx-empty-dir-567784fd-6p2zl bash
+```
+
+puis `curl localhost`
+
+```
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx/1.25.3</center>
+</body>
+</html>
+```
+
+Verifions maintenant que lorsqu'un conteneur d'un pod est supprimé, Kubernetes crée un nouveau conteneur et y monte le volume `emptyDir` existant. 
+
+on va chercher l'ID du conteneur avec la commande: 
+```
+kubectl describe pod/nginx-empty-dir-567784fd-6p2zl
+```
+
+on obtient cette réponse: 
+```
+Name:             nginx-empty-dir-567784fd-6p2zl
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 16 Nov 2023 12:42:47 +0100
+Labels:           app=nginx-empty-dir
+                  pod-template-hash=567784fd
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.26
+IPs:
+  IP:           10.244.0.26
+Controlled By:  ReplicaSet/nginx-empty-dir-567784fd
+Containers:
+  nginx-container:
+    Container ID:   docker://204471e1604ef7096a2c6bb7c351dca078036592d76f57294fd0f39cdaa942fd
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86e53c4c16a6a276b204b0fd3a8143d86547c967dc8258b3d47c3a21bb68d3c6
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 16 Nov 2023 12:42:49 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /usr/share/nginx/html from nginx-empty-volume (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-cn9kz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  nginx-empty-volume:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-cn9kz:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+```
+
+avec pour Conteneur ID : `docker://204471e1604ef7096a2c6bb7c351dca078036592d76f57294fd0f39cdaa942fd`
+
+on accede au noeud minikube avec:
+```
+minikube ssh
+```
+et on supprime le conteneur
+```
+docker rm -f 204471e1604ef7096a2c6bb7c351dca078036592d76f57294fd0f39cdaa942fd
+```
 
 ## 2. Use `hostPath` storage
 
@@ -151,3 +243,12 @@ Hello from Kubernetes storage!
 ## 3. Use PersistentVolume
 
 Reference to this tutorial and reproduce all of the steps - https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+
+
+
+
+
+kubectl exec -it nginx-empty-dir-567784fd-6p2zl bash
+
+
+docker rm -f 204471e1604ef7096a2c6bb7c351dca078036592d76f57294fd0f39cdaa942fd
